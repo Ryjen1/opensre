@@ -10,7 +10,7 @@
 
 <p>
   <a href="https://github.com/Tracer-Cloud/opensre/stargazers"><img src="https://img.shields.io/github/stars/Tracer-Cloud/opensre?style=flat-square&color=FF6B00" alt="Stars"></a>
-  <a href="https://github.com/Tracer-Cloud/tracer-agent/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="License"></a>
+  <a href="https://github.com/Tracer-Cloud/opensre/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="License"></a>
   <a href="https://github.com/Tracer-Cloud/opensre/blob/main/.github/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Tracer-Cloud/opensre/ci.yml?style=flat-square&label=CI" alt="CI"></a>
   <img src="https://img.shields.io/badge/open%20source-forever-brightgreen?style=flat-square" alt="Open Source">
 </p>

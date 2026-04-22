@@ -3,21 +3,32 @@ export
 
 .PHONY: install onboard benchmark benchmark-update-readme test test-full demo alert-template investigate-alert verify-integrations check-docker check-langgraph check-langsmith-api-key grafana-local-up grafana-local-down grafana-local-seed langgraph-build langgraph-deploy clean lint format deploy deploy-lambda deploy-prefect deploy-flink destroy destroy-lambda destroy-prefect destroy-flink prefect-local-test simulate-k8s-alert test-k8s-local test-k8s test-k8s-datadog chaos-mesh-up chaos-mesh-down chaos-engineering-apply chaos-engineering-delete chaos-lab-up chaos-lab-down chaos-experiment-list chaos-experiment-up chaos-experiment-down deploy-dd-monitors cleanup-dd-monitors deploy-eks destroy-eks test-k8s-eks datadog-demo crashloop-demo regen-trigger-config test-rca test-rca-grafana test-synthetic test-rds-synthetic test-cli-smoke deploy-langsmith destroy-langsmith test-langsmith deploy-vercel destroy-vercel test-vercel deploy-ec2 destroy-ec2 test-ec2 deploy-ec2-hello destroy-ec2-hello deploy-remote destroy-remote deploy-bedrock destroy-bedrock test-bedrock
 
+# Detection for venv layout (Unix vs Windows)
 ifneq ($(wildcard .venv/bin/python),)
-PYTHON = .venv/bin/python
-PIP = .venv/bin/python -m pip
-else
-PYTHON = python3
-PIP = python3 -m pip
+    VENV_BIN = .venv/bin
+    VENV_PYTHON = .venv/bin/python
+else ifneq ($(wildcard .venv/Scripts/python.exe),)
+    VENV_BIN = .venv/Scripts
+    VENV_PYTHON = .venv/Scripts/python.exe
 endif
+
+# Base python for creating venv
+ifeq ($(OS),Windows_NT)
+    PYTHON_BASE ?= python
+else
+    PYTHON_BASE ?= python3
+endif
+
+PYTHON = $(if $(VENV_PYTHON),$(VENV_PYTHON),$(PYTHON_BASE))
+PIP = $(PYTHON) -m pip
 # PIP_INSTALL_FLAGS = --user --break-system-packages
 USER_BASE := $(shell $(PYTHON) -m site --user-base)
 USER_BIN := $(USER_BASE)/bin
-export PATH := $(if $(wildcard .venv/bin),$(CURDIR)/.venv/bin:,)$(USER_BIN):$(PATH)
+export PATH := $(if $(VENV_BIN),$(CURDIR)/$(VENV_BIN):,)$(USER_BIN):$(PATH)
 
 # Create venv and install dependencies
 install:
-	python3 -m venv .venv
+	$(PYTHON_BASE) -m venv .venv
 	$(PIP) install --upgrade pip
 	$(PIP) install $(PIP_INSTALL_FLAGS) -e ".[dev]"
 	$(PYTHON) -m app.analytics.install
@@ -520,3 +531,8 @@ help:
 	@echo "  make check           - Run all checks"
 	@echo "  make benchmark		  - Run benchmark report generation"
 	@echo "  make benchmark-update-readme - Update README from cached benchmark results"
+print-vars:
+	@echo "VENV_BIN=$(VENV_BIN)"
+	@echo "VENV_PYTHON=$(VENV_PYTHON)"
+	@echo "PYTHON_BASE=$(PYTHON_BASE)"
+	@echo "PYTHON=$(PYTHON)"

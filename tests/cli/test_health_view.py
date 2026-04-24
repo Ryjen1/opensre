@@ -3,8 +3,6 @@ from io import StringIO
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
-from click.testing import CliRunner
 from rich.console import Console
 
 from app.cli.health_view import (
